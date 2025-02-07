@@ -12,24 +12,20 @@ public interface ClaseRepository extends JpaRepository<ClaseEntity, Long> {
 
     Page<ClaseEntity> findByAsignaturaContaining(
             String filter1, Pageable oPageable);
-
-    Page<ClaseEntity> findByTipoContaining(
-            String filter1, Pageable oPageable);
-
-            
+       
 
     Page<ClaseEntity> findByAlumnoId(
             Long id_alumno, Pageable oPageable);
 
-    @Query(value = "SELECT * FROM clase WHERE asignatura LIKE %:strAsignatura% OR tipo LIKE %:strTipo% AND AND id_alumno=:id_alumno", nativeQuery = true)
-    Page<ClaseEntity> findByAlumnoIdAndAsignaturaContainingOrTipoContaining(String strAsignatura,
-            String strTipo, Long id_alumno, Pageable oPageable);
+    @Query(value = "SELECT * FROM clase WHERE asignatura LIKE %:strAsignatura% AND id_alumno=:id_alumno", nativeQuery = true)
+    Page<ClaseEntity> findByAlumnoIdAndAsignaturaContaining(String strAsignatura,
+            Long id_alumno, Pageable oPageable);
 
     Page<ClaseEntity> findByProfesorId(Long id_profesor, Pageable oPageable);
 
-    @Query(value = "SELECT * FROM clase WHERE (asignatura LIKE %:strAsignatura% OR tipo LIKE %:strTipo%) AND id_profesor=:id_profesor", nativeQuery = true)
-    Page<ClaseEntity> findByProfesorIdAndAsignaturaContainingOrTipoContaining(String strAsignatura,
-            String strTipo, Long id_profesor, Pageable oPageable);
+    @Query(value = "SELECT * FROM clase WHERE (asignatura LIKE %:strAsignatura% OR) AND id_profesor=:id_profesor", nativeQuery = true)
+    Page<ClaseEntity> findByProfesorIdAndAsignaturaContaining(String strAsignatura,
+            Long id_profesor, Pageable oPageable);
 
 
             @Query("SELECT c FROM ClaseEntity c LEFT JOIN FETCH c.alumno LEFT JOIN FETCH c.profesor WHERE c.id = :id")

@@ -42,13 +42,9 @@ public class AlumnoEntity {
     @OneToMany(mappedBy = "alumno", fetch = FetchType.LAZY)
     private java.util.List<ClaseEntity> clases;
 
-    @OneToMany(mappedBy = "alumno", fetch = FetchType.LAZY)
-    private java.util.List<AlquilerEntity> alquileres;
-
 
     public AlumnoEntity() {
         this.clases = new java.util.ArrayList<>();
-        this.alquileres = new java.util.ArrayList<>();
     }
 
 
@@ -125,8 +121,5 @@ public class AlumnoEntity {
         return clases.size();
     }
 
-    public int getAlquileres() {
-        return alquileres.size();
-    }
     
 }

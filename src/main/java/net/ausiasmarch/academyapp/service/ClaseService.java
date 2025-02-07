@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import net.ausiasmarch.academyapp.entity.AlumnoEntity;
 import net.ausiasmarch.academyapp.entity.ClaseEntity;
 import net.ausiasmarch.academyapp.entity.ProfesorEntity;
-import net.ausiasmarch.academyapp.entity.Tipo;
 import net.ausiasmarch.academyapp.exception.ResourceNotFoundException;
 import net.ausiasmarch.academyapp.repository.ClaseRepository;
 
@@ -44,27 +43,18 @@ public class ClaseService implements ServiceInterface<ClaseEntity> {
             new BigDecimal("436.71"), new BigDecimal("459.11"), new BigDecimal("579.15"), new BigDecimal("721.65"),
             new BigDecimal("857.91") };
 
-    private String[] arrTipos = { "Individual", "Grupal" };
 
     private BigDecimal[] arrHoras = { new BigDecimal("0.5"), new BigDecimal("1.0"), new BigDecimal("2.0"),
             new BigDecimal("3.0"), new BigDecimal("4.0"), new BigDecimal("5.00"), new BigDecimal("6.00") };
 
-    private Tipo getRandomTipo() {
-        String tipoStr = arrTipos[oRandomService.getRandomInt(0, arrTipos.length - 1)].toUpperCase();
-        try {
-            return Tipo.valueOf(tipoStr);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("El valor '" + tipoStr + "' no es válido para Tipo");
-        }
-    }
 
     public Page<ClaseEntity> getPageXAlumno(Pageable oPageable, Optional<String> filter,
             Optional<Long> id_alumno) {
         if (filter.isPresent()) {
             if (id_alumno.isPresent()) {
                 return oClaseRepository
-                        .findByAlumnoIdAndAsignaturaContainingOrTipoContaining(
-                                filter.get(), filter.get(), id_alumno.get(), oPageable);
+                        .findByAlumnoIdAndAsignaturaContaining(
+                                filter.get(), id_alumno.get(), oPageable);
             } else {
                 throw new ResourceNotFoundException("Clase no encontrada");
             }
@@ -82,8 +72,8 @@ public class ClaseService implements ServiceInterface<ClaseEntity> {
         if (filter.isPresent()) {
             if (id_profesor.isPresent()) {
                 return oClaseRepository
-                        .findByProfesorIdAndAsignaturaContainingOrTipoContaining(
-                                filter.get(), filter.get(), id_profesor.get(), oPageable);
+                        .findByProfesorIdAndAsignaturaContaining(
+                                filter.get(), id_profesor.get(), oPageable);
             } else {
                 throw new ResourceNotFoundException("Clase no encontrada");
             }
@@ -100,7 +90,6 @@ public class ClaseService implements ServiceInterface<ClaseEntity> {
         for (int i = 0; i < cantidad; i++) {
             ClaseEntity oClaseEntity = new ClaseEntity();
             oClaseEntity.setAsignatura(arrAsignaturas[oRandomService.getRandomInt(0, arrAsignaturas.length - 1)]);
-            oClaseEntity.setTipo(getRandomTipo());
             oClaseEntity.setPrecio(arrPrecios[oRandomService.getRandomInt(0, arrPrecios.length - 1)]);
             oClaseEntity.setHora(arrHoras[oRandomService.getRandomInt(0, arrHoras.length - 1)]);
             oClaseEntity.setAlumno(oAlumnoService.randomSelection());

@@ -15,18 +15,11 @@ public class DatabaseService {
     @Autowired
     ClaseService oClaseService;
 
-    @Autowired
-    TaquillaService oTaquillaService;
-
-    @Autowired
-    AlquilerService oAlquilerService;
     
     public Long fill() {     
         oAlumnoService.randomCreate(25L);  
         oProfesorService.randomCreate(25L);
         oClaseService.randomCreate(25L);
-        oTaquillaService.randomCreate(25L);
-        oAlquilerService.randomCreate(25L);
         return 0L;
 
     }
