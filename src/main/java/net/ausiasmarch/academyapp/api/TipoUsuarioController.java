@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import net.ausiasmarch.academyapp.entity.TipousuarioEntity;
-import net.ausiasmarch.academyapp.entity.UsuarioEntity;
 import net.ausiasmarch.academyapp.service.TipoUsuarioService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)

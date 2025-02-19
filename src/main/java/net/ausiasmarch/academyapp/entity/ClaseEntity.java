@@ -1,13 +1,17 @@
 package net.ausiasmarch.academyapp.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -33,36 +37,28 @@ public class ClaseEntity {
     @Digits(integer = 2, fraction = 2)
     private BigDecimal hora;
 
-    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
-    @JoinColumn(name = "id_alumno")
-    private AlumnoEntity alumno;
-
-    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
-    @JoinColumn(name = "id_profesor")
-    private ProfesorEntity profesor;
+    @JsonIgnoreProperties("clase")
+    @OneToMany(mappedBy = "clase", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private java.util.List<ParticipaEntity> participas;
 
     public ClaseEntity() {
     }
 
     public ClaseEntity(Long id, String asignatura,
-            BigDecimal precio, BigDecimal hora,
-            AlumnoEntity id_alumno, ProfesorEntity id_profesor) {
+            BigDecimal precio, BigDecimal hora) {
         this.id = id;
         this.asignatura = asignatura;
         this.precio = precio;
         this.hora = hora;
-        this.alumno = id_alumno;
-        this.profesor = id_profesor;
+
     }
 
     public ClaseEntity(String asignatura, 
-            BigDecimal precio, BigDecimal hora,
-            AlumnoEntity id_alumno, ProfesorEntity id_profesor) {
+            BigDecimal precio, BigDecimal hora) {
         this.asignatura = asignatura;
         this.precio = precio;
         this.hora = hora;
-        this.alumno = id_alumno;
-        this.profesor = id_profesor;
+   
     }
 
     public Long getId() {
@@ -97,20 +93,15 @@ public class ClaseEntity {
         this.hora = hora;
     }
 
-    public AlumnoEntity getAlumno() {
-        return alumno;
+    public java.util.List<ParticipaEntity> getParticipas() {
+        return participas;
     }
 
-    public void setAlumno(AlumnoEntity alumno) {
-        this.alumno = alumno;
+    public void setParticipas(java.util.List<ParticipaEntity> participas) {
+        this.participas = participas;
     }
 
-    public ProfesorEntity getProfesor() {
-        return profesor;
-    }
+ 
 
-    public void setProfesor(ProfesorEntity profesor) {
-        this.profesor = profesor;
-    }
 
 }

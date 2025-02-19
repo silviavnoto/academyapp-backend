@@ -37,20 +37,26 @@ public class UsuarioService {
     }
 
     public UsuarioEntity get(Long id) {
-        if (oAuthService.isContableWithItsOwnData(id) || oAuthService.isAdmin()
-                || oAuthService.isAuditorWithItsOwnData(id)) {
-            Optional<UsuarioEntity> usuario = oUsuarioRepository.findById(id);
-            if (usuario.isPresent()) {
+        Optional<UsuarioEntity> usuario = oUsuarioRepository.findById(id);
+    
+        if (usuario.isPresent()) {
+            if (oAuthService.isAdmin() || oAuthService.isContable()) {  
+                // Ahora permite acceso si el usuario es ADMIN o CONTABLE
                 return usuario.get();
             } else {
-                throw new EntityNotFoundException("Usuario no encontrado con ID: " + id);
+                throw new UnauthorizedAccessException("No tienes permisos para ver el usuario");
             }
         } else {
-            throw new UnauthorizedAccessException("No tienes permisos para ver el usuario");
+            throw new EntityNotFoundException("Usuario no encontrado con ID: " + id);
         }
     }
+    
+    
+    
+    
 
     public Page<UsuarioEntity> getPage(Pageable oPageable, Optional<String> filter) {
+
         if (oAuthService.isAdmin()) {
             if (filter.isPresent()) {
                 return oUsuarioRepository
@@ -60,11 +66,17 @@ public class UsuarioService {
             } else {
                 return oUsuarioRepository.findAll(oPageable);
             }
+
+        } else if (oAuthService.isContable()) {
+            return oUsuarioRepository.findByTipousuario_Id(3, oPageable);
+        } else if (oAuthService.isAuditor()) {
+            throw new UnauthorizedAccessException("Los Alumnos no tienen permisos para listar usuarios.");
         } else {
             throw new UnauthorizedAccessException("No tienes permisos para ver los usuarios");
         }
 
     }
+
 
     public Long count() {
         if (!oAuthService.isAdmin()) {
@@ -84,6 +96,7 @@ public class UsuarioService {
     }
 
     public UsuarioEntity create(UsuarioEntity oUsuarioEntity) {
+
         if (oAuthService.isAdmin()) {
             return oUsuarioRepository.save(oUsuarioEntity);
         } else {

@@ -1,7 +1,12 @@
 package net.ausiasmarch.academyapp.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -52,4 +57,10 @@ public class UsuarioEntity {
     @JoinColumn(name = "id_tipousuario")
     private TipousuarioEntity tipousuario;
 
+    @JsonIgnoreProperties("usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    private List<ParticipaEntity> participas;
+
+    
 }

@@ -3,7 +3,6 @@ package net.ausiasmarch.academyapp.api;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.ausiasmarch.academyapp.entity.ClaseEntity;
+import net.ausiasmarch.academyapp.entity.ParticipaEntity;
 import net.ausiasmarch.academyapp.service.ClaseService;
-import net.ausiasmarch.academyapp.service.ProfesorService;
-import net.ausiasmarch.academyapp.service.AlumnoService;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/clase")
 public class Clase {
@@ -32,20 +31,14 @@ public class Clase {
     @Autowired
     ClaseService oClaseService;
 
-    @Autowired
-    ProfesorService oProfesorService;
-
-    @Autowired
-    AlumnoService oAlumnoService;
-    
     @GetMapping("")
     public ResponseEntity<PageDTO<ClaseEntity>> getPage(
-            Pageable oPageable, 
+            Pageable oPageable,
             @RequestParam Optional<String> filter) {
-        
+
         Page<ClaseEntity> page = oClaseService.getPage(oPageable, filter);
         return new ResponseEntity<>(new PageDTO<>(page), HttpStatus.OK);
-    }    
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClaseEntity> getClase(@PathVariable Long id) {
@@ -62,17 +55,25 @@ public class Clase {
         return new ResponseEntity<Long>(oClaseService.delete(id), HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody ClaseEntity oClaseEntity) {
-         if (oClaseEntity.getAlumno().getId() == null || oClaseEntity.getAlumno().getId() == null) {
-        throw new DataIntegrityViolationException("id_alumno no puede ser nulo");
-    }
-        return new ResponseEntity<>(oClaseService.create(oClaseEntity), HttpStatus.OK);
-    }
+    /*
+     * @PostMapping("/new")
+     * public ResponseEntity<?> create(@RequestBody ClaseEntity oClaseEntity) {
+     * if (oClaseEntity.getUsuario().getId() == null ) {
+     * throw new DataIntegrityViolationException("id_usuario no puede ser nulo");
+     * }
+     * return new ResponseEntity<>(oClaseService.create(oClaseEntity),
+     * HttpStatus.OK);
+     * }
+     */
 
     @PutMapping("")
     public ResponseEntity<ClaseEntity> update(@RequestBody ClaseEntity oClaseEntity) {
         return new ResponseEntity<ClaseEntity>(oClaseService.update(oClaseEntity), HttpStatus.OK);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ClaseEntity> create(@RequestBody ClaseEntity oClaseEntity) {
+        return new ResponseEntity<ClaseEntity>(oClaseService.create(oClaseEntity), HttpStatus.OK);
     }
 
     @PutMapping("/random/{cantidad}")
@@ -85,13 +86,10 @@ public class Clase {
         return new ResponseEntity<Long>(oClaseService.deleteAll(), HttpStatus.OK);
     }
 
-    @PutMapping("/setalumno/{id}/{idalumno}")
-    public ResponseEntity<ClaseEntity> setAlumno(@PathVariable Long id, @PathVariable Long idalumno) {
-        return new ResponseEntity<ClaseEntity>(oClaseService.setAlumno(id, idalumno), HttpStatus.OK);
+    @GetMapping("/{id}/usuarios")
+    public ResponseEntity<Page<ParticipaEntity>> getUsuariosEnClase(
+            @PathVariable Long id, Pageable pageable) {
+        return new ResponseEntity<>(oClaseService.getUsuariosEnClase(id, pageable), HttpStatus.OK);
     }
 
-    @PutMapping("/setprofesor/{id}/{idprofesor}")
-    public ResponseEntity<ClaseEntity> setProfesor(@PathVariable Long id, @PathVariable Long idprofesor) {
-        return new ResponseEntity<ClaseEntity>(oClaseService.setProfesor(id, idprofesor), HttpStatus.OK);
-    }
 }

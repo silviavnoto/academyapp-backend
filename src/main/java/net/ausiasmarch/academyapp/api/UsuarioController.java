@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.ausiasmarch.academyapp.entity.ClaseEntity;
 import net.ausiasmarch.academyapp.entity.UsuarioEntity;
+import net.ausiasmarch.academyapp.repository.UsuarioRepository;
 import net.ausiasmarch.academyapp.service.UsuarioService;
-import java.util.Optional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
@@ -30,6 +34,9 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService oUsuarioService;
+
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     @GetMapping("/byemail/{email}")
     public ResponseEntity<UsuarioEntity> getUsuarioByEmail(@PathVariable(value = "email") String email) {
@@ -80,5 +87,17 @@ public class UsuarioController {
         return new ResponseEntity<Long>(oUsuarioService.deleteAll(), HttpStatus.OK);
     }
 
+    // 📌 🔍 Obtener todas las clases en las que participa un usuario
+    @GetMapping("/{id}/clases")
+    public ResponseEntity<List<ClaseEntity>> getClasesPorUsuario(@PathVariable Long id) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        List<ClaseEntity> clases = usuario.getParticipas().stream()
+            .map(participa -> participa.getClase()) // 🔹 Obtener la clase de cada participación
+            .collect(Collectors.toList());
+
+        return new ResponseEntity<>(clases, HttpStatus.OK);
+    }
 
 }

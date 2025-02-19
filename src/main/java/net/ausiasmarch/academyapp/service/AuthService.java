@@ -82,4 +82,9 @@ public class AuthService {
         return this.isAuditor() && oUsuarioEntity.getId() == id;
     }
 
+    public boolean isUserAuthenticated() {
+        return oHttpServletRequest.getUserPrincipal() != null;
+    }    
+    
+
 }

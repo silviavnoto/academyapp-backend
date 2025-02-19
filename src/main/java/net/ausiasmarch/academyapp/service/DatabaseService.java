@@ -6,20 +6,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class DatabaseService {
 
-    @Autowired
-    AlumnoService oAlumnoService;
-
-    @Autowired
-    ProfesorService oProfesorService;
 
     @Autowired
     ClaseService oClaseService;
 
     
     public Long fill() {     
-        oAlumnoService.randomCreate(25L);  
-        oProfesorService.randomCreate(25L);
+
         oClaseService.randomCreate(25L);
+       // oParticipa.randomCreate(25L);
+       // oUsuario.randomCreate(25L);
+       // oTipoUsuario.randomCreate(25L);
         return 0L;
 
     }
